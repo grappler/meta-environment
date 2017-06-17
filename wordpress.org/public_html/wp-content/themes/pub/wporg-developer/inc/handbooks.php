@@ -62,7 +62,6 @@ class Devhub_Handbooks {
 	 * @return array Array with public query vars.
 	 */
 	public static function add_query_vars( $public_query_vars ) {
-		$public_query_vars['is_handbook'] = false;
 		$public_query_vars['current_handbook'] = false;
 		$public_query_vars['current_handbook_home_url'] = false;
 		$public_query_vars['current_handbook_name'] = '';
@@ -77,7 +76,7 @@ class Devhub_Handbooks {
 	 */
 	public static function pre_get_posts( $query ) {
 		$is_handbook = function_exists( 'wporg_is_handbook' ) ? wporg_is_handbook() : false;
-		$query->set( 'is_handbook', $is_handbook );
+		$query->is_handbook = $is_handbook;
 
 		$current_handbook = function_exists( 'wporg_get_current_handbook' ) ? wporg_get_current_handbook() : false;
 		$query->set( 'current_handbook', $current_handbook );

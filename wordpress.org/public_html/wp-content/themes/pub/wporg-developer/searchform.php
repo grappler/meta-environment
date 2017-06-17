@@ -34,7 +34,7 @@
 <?php } ?>
 
 	<?php
-		$is_handbook = get_query_var( 'is_handbook' );
+		$is_handbook = $GLOBALS['wp_query']->is_handbook;
 		$search_url  = get_query_var( 'current_handbook_home_url' );
 		$search_url  = $search_url ? $search_url : home_url( '/' );
 		$filters     = ! ( $is_handbook || is_404() );
