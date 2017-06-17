@@ -63,7 +63,7 @@ class Devhub_Handbooks {
 	 */
 	public static function add_query_vars( $public_query_vars ) {
 		$public_query_vars['current_handbook'] = '';
-		$public_query_vars['current_handbook_home_url'] = false;
+		$public_query_vars['current_handbook_home_url'] = '';
 		$public_query_vars['current_handbook_name'] = '';
 
 		return $public_query_vars;
@@ -81,7 +81,8 @@ class Devhub_Handbooks {
 		$current_handbook = function_exists( 'wporg_get_current_handbook' ) && wporg_get_current_handbook() ? wporg_get_current_handbook() : '';
 		$query->set( 'current_handbook', $current_handbook );
 
-		$current_handbook_home_url = function_exists( 'wporg_get_current_handbook_home_url' ) ? wporg_get_current_handbook_home_url() : false;
+		$current_handbook_home_url = function_exists( 'wporg_get_current_handbook_home_url' ) && wporg_get_current_handbook_home_url() ? wporg_get_current_handbook_home_url() :
+		'';
 		$query->set( 'current_handbook_home_url', $current_handbook_home_url );
 
 		$current_handbook_name = function_exists( 'wporg_get_current_handbook_name' ) ? wporg_get_current_handbook_name() : '';
