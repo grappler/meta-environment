@@ -480,6 +480,10 @@ class WPORG_Themes_Upload {
 		if ( ! function_exists( 'run_themechecks' ) ) {
 			include_once WP_PLUGIN_DIR . '/theme-check/checkbase.php';
 		}
+		// Load the theme checking code.
+		if ( ! function_exists( 'theme_check_do_sniff' ) ) {
+			include_once WP_PLUGIN_DIR . '/theme-check/sniff.php';
+		}
 
 		list( $php_files, $css_files, $other_files ) = $this->separate_files( $files );
 
@@ -490,6 +494,26 @@ class WPORG_Themes_Upload {
 		$verdict = $result ? array( 'tc-pass', __( 'Pass', 'wporg-themes' ) ) : array( 'tc-fail', __( 'Fail', 'wporg-themes' ) );
 		echo '<h4>' . sprintf( __( 'Results of Automated Theme Scanning: %s', 'wporg-themes' ), vsprintf( '<span class="%1$s">%2$s</span>', $verdict ) ) . '</h4>';
 		echo '<ul class="tc-result">' . display_themechecks() . '</ul>';
+
+		$args['text_domains'][] = $this->theme_slug;
+		// Frameworks.
+		foreach ( $php_files as $key => $file ) {
+			if ( strrpos( $key, 'hybrid.php' ) ) {
+				$args['text_domains'][] = 'hybrid-core';
+			}
+			if ( strrpos( $key, 'kirki.php' ) ) {
+				$args['text_domains'][] = 'kirki';
+			}
+		}
+		$args['extensions'] = array('php','css',);
+
+		$sniff_result = theme_check_do_sniff( $this->theme_dir, $args );
+		theme_check_render_json_report( $sniff_result[1], $this->theme_dir );
+
+		if ( 0 < $sniff_result[0] ) {
+			$result = false;
+		}
+
 		echo '<div class="notice notice-info"><p>' . __( 'Note: While the automated theme scan is based on the Theme Review Guidelines, it is not a complete review. A successful result from the scan does not guarantee that the theme will pass review. All submitted themes are reviewed manually before approval.', 'wporg-themes' ) . '</p></div>';
 
 		// Override some of the upload checks for child themes.
